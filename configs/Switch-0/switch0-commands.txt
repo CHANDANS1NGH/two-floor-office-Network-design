@@ -1,1 +1,87 @@
+# ============================================
+# Device   : Switch0 (Floor 1)
+# Role     : Access Layer Switch
+# VLANs    : VLAN 10 (HR), VLAN 20 (Design)
+# Trunk    : Fa0/3 → Router0 (Gig0/0)
+# ============================================
 
+# -------------------------
+# Step 1 — Enter Privileged Mode
+# -------------------------
+
+enable
+configure terminal
+
+# -------------------------
+# Step 2 — Set Hostname
+# -------------------------
+
+hostname s0
+
+# -------------------------
+# Step 3 — Create VLANs
+# -------------------------
+
+vlan 10
+ name HR
+ exit
+
+vlan 20
+ name Design
+ exit
+
+# -------------------------
+# Step 4 — Assign Access Ports to VLANs
+# -------------------------
+
+# PC0 → VLAN 10 (HR)
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+ exit
+
+# PC1 → VLAN 20 (Design)
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+ exit
+
+# PC4 → VLAN 20 (Design)
+interface FastEthernet0/4
+ switchport mode access
+ switchport access vlan 20
+ exit
+
+# PC5 → VLAN 10 (HR)
+interface FastEthernet0/5
+ switchport mode access
+ switchport access vlan 10
+ exit
+
+# -------------------------
+# Step 5 — Configure Trunk Port (Uplink to Router0)
+# -------------------------
+
+# Fa0/3 is connected to Router0 Gig0/0
+interface FastEthernet0/3
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ no shutdown
+ exit
+
+
+# ============================================
+# Verification Commands
+# ============================================
+
+# Check VLANs and port assignments
+show vlan brief
+
+# Check trunk status
+show interfaces trunk
+
+# Check specific interface status
+show interfaces FastEthernet0/3 switchport
+
+# Check all interfaces summary
+show ip interface brief
